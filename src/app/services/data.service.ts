@@ -7,18 +7,14 @@ import { delay } from 'rxjs/operators';
 })
 export class DataService {
 
-  private _data: string = "data from DataService";
+  private data: string = "data from DataService";
 
   constructor() { }
 
-  delayedStringReturn() {
+  delayedStringReturn(): Observable<string> {
     return of(this.data).pipe(
-      delay(5000)
+      delay(4000)
     );
-  }
-
-  get data(): string {
-    return this._data;
   }
 
 }

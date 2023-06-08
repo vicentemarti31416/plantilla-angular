@@ -1,3 +1,4 @@
+import { SelectService } from './../services/select.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,6 +17,7 @@ export class HomeComponent implements OnInit {
   texto: string = "";
   objetoPadre: string = "";
   strings: string[] = ["hola", "mundo", "java", "typescript"];
+  stringsHijo: string[] = [];
   color: string = "rojo";
   isActive: boolean = true;
   form!: FormGroup;
@@ -26,8 +28,9 @@ export class HomeComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private adminService: AdminService
-  ) {}
+    private adminService: AdminService,
+    private selectService: SelectService
+  ) { }
 
   ngOnInit(): void {
     this.form = this.initForm();
@@ -36,8 +39,15 @@ export class HomeComponent implements OnInit {
   initForm(): FormGroup {
     return this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
+      optionPadre: [''],
+      optionHijo: [''],
       emails: this.formBuilder.array([])
     })
+  }
+  
+  findStringstHijo(): void {
+    this.form.get('optionHijo')?.setValue('');
+    this.stringsHijo = this.selectService.selectStrings(this.form.get('optionPadre')?.value);
   }
 
   get name(): FormControl {
@@ -54,7 +64,7 @@ export class HomeComponent implements OnInit {
     this.emails.push(this.formBuilder.control(event.target.value));
     (this.form.get('emails') as FormArray).valueChanges.subscribe((valueChanged) => console.log("valueChanged = " + valueChanged));
   }
-  
+
   addEmailOnClick(email: string) {
     this.emails.push(this.formBuilder.control(email));
   }
@@ -73,7 +83,7 @@ export class HomeComponent implements OnInit {
   }
 
   goQueryParams(): void {
-    this.router.navigate(['/brother'], {queryParams: {saludo: 'hola mundo'}})
+    this.router.navigate(['/brother'], { queryParams: { saludo: 'hola mundo' } })
   }
 
   changeRoleStatus(): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-hermano',
@@ -13,10 +13,10 @@ export class HermanoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe((params) => {
+    this.activatedRoute.params.subscribe((params: Params) => {
       console.log(params);
     })
-    this.activatedRoute.queryParams.subscribe((queryParams) => {
+    this.activatedRoute.queryParams.subscribe((queryParams: Params) => {
       console.log(queryParams)
     })
   }
