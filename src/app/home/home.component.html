@@ -4,9 +4,11 @@
 
 <h1 [ngClass]="['rojo']">ngClass con array</h1>
 
-<ul>
-    <li *ngFor="let str of strings; let i = index">Index = {{ i }} {{str}}</li>
-</ul>
+<ng-container *ngIf="strings.length > 0">
+    <ul>
+        <li *ngFor="let str of strings; let i = index">Index = {{ i }} {{str}}</li>
+    </ul>
+</ng-container>
 
 <div class="padre" >
     <input type="text" [placeholder]="'objetoPadre'" [(ngModel)]="objetoPadre">
@@ -29,6 +31,17 @@
         <option *ngFor="let option of stringsHijo" [ngValue]="option">{{ option }}</option>
     </select>
     <br>
+    <div class="checkboxes-container">
+        <div class="checkbox">
+            <input type="checkbox" name="" id="check" [checked]="selectAll" [(ngModel)]="selectAll" [ngModelOptions]="{standalone: true}" [value]="0" (change)="onChangeFood($event)">
+            <label for="check">{{ selectAll ? 'Deseleccionar todo' : 'Seleccionar todo' }}</label>
+        </div>
+        <div *ngFor="let food of foods"  class="checkbox">
+            <input type="checkbox" name="food" id="check" [checked]="food.selected" [value]="food.id" (change)="onChangeFood($event)">
+            <label for="check">{{ food.name }}</label>
+        </div>
+    </div>
+    <br>
     <button type="submit" (click)="addEmailOnClick(input.value)">Add email</button>
 </form>
 
@@ -37,6 +50,16 @@
 
 <h1>Texto del form con get {{ form.get('name')?.value }}</h1>
 <h1>Texto del form con controls {{ form.controls['name'].value }}</h1>
+
+<form #templateForm> 
+    <!--Se usa [compareWith] para que el formulario esté marcado cuando hacemos el update de un objeto y el 
+    valor que trae de la base de datos no queda seleccionardo automáticamente en la option del select-->
+    <select [compareWith]="compareStrings" name="templateOption" id="templateOption" [(ngModel)]="templateOption.name">
+        <option *ngFor="let option of templateOptions" [ngValue]="option">{{ option }}</option>
+    </select>
+</form>
+
+<h1>templateOption.name = {{ templateOption.name }}</h1>
 
 <ul>
     <li *ngFor="let email of emailsCopy">{{ email }}</li>
@@ -49,7 +72,16 @@
     <button (click)="goParams()">Go to params</button>
     <button (click)="goQueryParams()">Go to queryParams</button>
     <br>
-    <button type="button" (click)="changeRoleStatus()">Change Admin Status</button>
-    <button type="button" [routerLink]="['/detail', id]">Go to detail</button>
+    <button *ngIf="!isAdmin else admin" type="button" (click)="changeRoleStatus()">Log in</button>
+    <ng-template #admin>
+        <button type="button" [routerLink]="['/detail', id]">Go to detail</button>
+    </ng-template>
     <h3>isAdmin = {{ isAdmin }}</h3>
 </div>
+
+<a [routerLink]="['/contact']">Go to contact in other module</a>
+
+<app-hermano *ngFor="let item of templateOptions">
+    <div card-header>header content projection {{ item }}</div>
+    <div card-body>body content projection {{ item }}</div>
+</app-hermano>

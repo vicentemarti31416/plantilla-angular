@@ -1,8 +1,9 @@
 import { SelectService } from './../services/select.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminService } from '../services/admin.service';
+import { every } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -18,12 +19,20 @@ export class HomeComponent implements OnInit {
   objetoPadre: string = "";
   strings: string[] = ["hola", "mundo", "java", "typescript"];
   stringsHijo: string[] = [];
+  templateOptions: string[] = ["uno", "dos", "tres"];
+  templateOption = { name: "" };
   color: string = "rojo";
   isActive: boolean = true;
   form!: FormGroup;
   emailsCopy: string[] = [];
   id: number = 1;
   isAdmin: boolean = false;
+  foods = [
+    { id: 1, name: "morcillas", selected: false },
+    { id: 2, name: "chorizos", selected: false },
+    { id: 3, name: "longanizas", selected: false }
+  ]
+  selectAll: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,6 +43,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.initForm();
+    this.updateString(); // Descomentar para probar el select del formulario
   }
 
   initForm(): FormGroup {
@@ -41,13 +51,46 @@ export class HomeComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       optionPadre: [''],
       optionHijo: [''],
-      emails: this.formBuilder.array([])
+      emails: this.formBuilder.array([]),
+      foods: this.formBuilder.array([])
     })
   }
-  
+
+  onChangeFood(event: any): void {
+    const id: number = event.target.value;
+    const index = id -1;
+    if (index === -1) {
+      this.foods = this.foods.map((food) => { 
+        return {...food, selected: this.selectAll};
+      });
+    } else {
+      this.foods[index].selected = !this.foods[index].selected;
+      this.foods.every((food) => food.selected) ? this.selectAll = true : this.selectAll = false;
+    }
+  }
+
   findStringstHijo(): void {
     this.form.get('optionHijo')?.setValue('');
     this.stringsHijo = this.selectService.selectStrings(this.form.get('optionPadre')?.value);
+  }
+
+  // En este método simulamos obtener un objeto de la base de datos para que el select  
+  // del formulario marque la opción que tiene el objeto guardado en la base de datos
+  updateString(): void {
+    const objectDataBase = { name: "", optionPadre: "hola", optionHijo: "", emails: [] };
+    // Así sería en los formularios reactivos
+    this.form.get('optionPadre')?.setValue(objectDataBase.optionPadre);
+    this.findStringstHijo();
+    // Así sería con los formularios basados en plantillas
+    const templateOptionDataBase = { name: "uno" }
+    this.templateOption = templateOptionDataBase;
+  }
+
+  compareStrings(obj1: any, obj2: any): boolean {
+    if (obj1 === undefined && obj2 === undefined) {
+      return true;
+    }
+    return (obj1 === null || obj2 === null || obj1 === undefined || obj2 === undefined) ? false : obj1.name === obj2.name;
   }
 
   get name(): FormControl {
