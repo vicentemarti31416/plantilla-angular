@@ -16,6 +16,10 @@
     <h3>{{ mensaje }}</h3>
 </div>
 
+<ul>
+    <li *ngFor="let email of emailsCopy">{{ email }}</li>
+</ul>
+
 <form [formGroup]="form" class="form-administration">
     <input #input id="name" placeholder="form name" type="text" name="name" formControlName="name" (change)="addEmailOnChange($event)">
     <div *ngIf="name.touched && name.invalid" class="form-error">Name incorrecto *ngIf</div>
@@ -37,7 +41,7 @@
             <label for="check">{{ selectAll ? 'Deseleccionar todo' : 'Seleccionar todo' }}</label>
         </div>
         <div *ngFor="let food of foods"  class="checkbox">
-            <input type="checkbox" name="food" id="check" [checked]="food.selected" [value]="food.id" (change)="onChangeFood($event)">
+            <input type="checkbox" name="food" id="check" formArraylName="foods" [checked]="food.selected" [value]="food.id" (change)="onChangeFood($event)">
             <label for="check">{{ food.name }}</label>
         </div>
     </div>
@@ -60,10 +64,6 @@
 </form>
 
 <h1>templateOption.name = {{ templateOption.name }}</h1>
-
-<ul>
-    <li *ngFor="let email of emailsCopy">{{ email }}</li>
-</ul>
 
 <div class="rutas">
     <a [routerLink]="['/']" routerLinkActive="claseCuandoActiva" [routerLinkActiveOptions]="{exact: true}">Home</a>

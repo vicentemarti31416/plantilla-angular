@@ -33,6 +33,7 @@ export class HomeComponent implements OnInit {
     { id: 3, name: "longanizas", selected: false }
   ]
   selectAll: boolean = false;
+  foodsArray!: FormArray | null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,16 +44,25 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.initForm();
+    this.foodsArray = this.form.get('foods') as FormArray | null;
     this.updateString(); // Descomentar para probar el select del formulario
   }
 
   initForm(): FormGroup {
+    const foodsArray = this.foods.map(food => 
+      this.formBuilder.group({
+        id: food.id,
+        name: food.name,
+        selected: food.selected
+      })
+    );
+
     return this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       optionPadre: [''],
       optionHijo: [''],
       emails: this.formBuilder.array([]),
-      foods: this.formBuilder.array([])
+      foods: this.formBuilder.control([]) //this.formBuilder.array(foodsArray)
     })
   }
 
@@ -67,6 +77,9 @@ export class HomeComponent implements OnInit {
       this.foods[index].selected = !this.foods[index].selected;
       this.foods.every((food) => food.selected) ? this.selectAll = true : this.selectAll = false;
     }
+    this.form.get('foods')?.setValue(this.foods);
+    console.log((this.form.get('foods') as FormArray).value);
+    console.log(this.form.value)
   }
 
   findStringstHijo(): void {
