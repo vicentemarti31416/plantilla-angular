@@ -20,7 +20,7 @@
     <li *ngFor="let email of emailsCopy">{{ email }}</li>
 </ul>
 
-<form [formGroup]="form" class="form-administration">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-administration">
     <input #input id="name" placeholder="form name" type="text" name="name" formControlName="name" (change)="addEmailOnChange($event)">
     <div *ngIf="name.touched && name.invalid" class="form-error">Name incorrecto *ngIf</div>
     <div [hidden]="name.pristine || name.valid" class="form-error">Name incorrecto hidden</div>
@@ -46,7 +46,7 @@
         </div>
     </div>
     <br>
-    <button type="submit" (click)="addEmailOnClick(input.value)">Add email</button>
+    <button type="submit" (click)="addEmailOnClick(input.value)">Submit</button>
 </form>
 
 <h1>Option padre selected = {{ form.get('optionPadre')?.value }}</h1>
@@ -80,6 +80,8 @@
 </div>
 
 <a [routerLink]="['/contact']">Go to contact in other module</a>
+
+<pre>Usando pipe: {{ templateOptions | data: query | json }}</pre>
 
 <app-hermano *ngFor="let item of templateOptions">
     <div card-header>header content projection {{ item }}</div>

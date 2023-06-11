@@ -9,6 +9,9 @@ import { HermanoComponent } from './hermano/hermano.component';
 import { AdminComponent } from './admin/admin.component';
 import { DetailComponent } from './detail/detail.component';
 import { HomeComponent } from './home/home.component';
+import { DataPipe } from './pipes/data.pipe';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { DataInterceptor } from './interceptors/data.interceptor';
 
 @NgModule({
   declarations: [
@@ -17,15 +20,19 @@ import { HomeComponent } from './home/home.component';
     HermanoComponent,
     AdminComponent,
     DetailComponent,
-    HomeComponent
+    HomeComponent,
+    DataPipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: DataInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -34,6 +34,7 @@ export class HomeComponent implements OnInit {
   ]
   selectAll: boolean = false;
   foodsArray!: FormArray | null;
+  query: string = "uno"; 
 
   constructor(
     private formBuilder: FormBuilder,
@@ -46,6 +47,7 @@ export class HomeComponent implements OnInit {
     this.form = this.initForm();
     this.foodsArray = this.form.get('foods') as FormArray | null;
     this.updateString(); // Descomentar para probar el select del formulario
+    this.isAdmin = this.adminService.isAdmin;
   }
 
   initForm(): FormGroup {
@@ -62,7 +64,7 @@ export class HomeComponent implements OnInit {
       optionPadre: [''],
       optionHijo: [''],
       emails: this.formBuilder.array([]),
-      foods: this.formBuilder.control([]) //this.formBuilder.array(foodsArray)
+      foods: this.formBuilder.array(foodsArray)
     })
   }
 
@@ -80,6 +82,13 @@ export class HomeComponent implements OnInit {
     this.form.get('foods')?.setValue(this.foods);
     console.log((this.form.get('foods') as FormArray).value);
     console.log(this.form.value)
+  }
+
+  onSubmit(): void {
+    const formValue = this.form.value;
+    const selectedFoods = formValue.foods.filter((food: any) => food.selected);
+    formValue.foods = selectedFoods;
+    console.log(formValue);
   }
 
   findStringstHijo(): void {
