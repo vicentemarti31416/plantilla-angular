@@ -20,8 +20,4 @@ export class DataService {
     );
   }
 
-  public findData(): Observable<any> {
-    return this.httpClient.get<any>("https://www.google.es");
-  }
-
 }
